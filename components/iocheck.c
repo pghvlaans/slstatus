@@ -113,6 +113,10 @@
 		newwait = 0;
 		/* get IO wait stats from the /sys/block directories */
 		while ((dp = readdir(bd))) {
+			/* limit device name length */
+			if ((strlen(dp->d_name)) >= 27) {
+				continue;
+			}
 			if (strstr(dp->d_name, "loop") ||
 			    strstr(dp->d_name, "ram")) {
 			   	continue;
@@ -122,13 +126,13 @@
 			    	continue;
 			}
 			/* virtual devices don't count */
-			char virtpath[50];
+			char virtpath[54];
 			strcpy(virtpath, "/sys/devices/virtual/block/");
 			strcat(virtpath, dp->d_name);
 			if (access(virtpath, R_OK) == 0) {
 				continue;
 			}
-			char statpath[34];
+			char statpath[43];
 			strcpy(statpath, "/sys/block/");
 			strcat(statpath, dp->d_name);
 			strcat(statpath, "/stat");
