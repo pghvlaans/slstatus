@@ -113,28 +113,29 @@
 		newwait = 0;
 		/* get IO wait stats from the /sys/block directories */
 		while ((dp = readdir(bd))) {
-			/* limit device name length */
-			if ((strlen(dp->d_name)) >= 27) {
-				continue;
-			}
-			if (strstr(dp->d_name, "loop") ||
-			    strstr(dp->d_name, "ram")) {
+			int devlen, chklen, statlen;
+			devlen = strlen(dp->d_name);
+			char devname[devlen];
+			strcpy(devname, dp->d_name);
+			if (strstr(devname, "loop") ||
+			    strstr(devname, "ram")) {
 			   	continue;
 			}
-			if (!strcmp(dp->d_name, ".") ||
-			    !strcmp(dp->d_name, "..")) {
+			if (!strcmp(devname, ".") ||
+			    !strcmp(devname, "..")) {
 			    	continue;
 			}
-			/* virtual devices don't count */
-			char virtpath[54];
-			strcpy(virtpath, "/sys/devices/virtual/block/");
-			strcat(virtpath, dp->d_name);
-			if (access(virtpath, R_OK) == 0) {
+			statlen = 16 + devlen;
+			chklen = 18 + devlen;
+			char statpath[statlen], chkpath[chklen];
+			strcpy(statpath, "/sys/block/");
+			strcat(statpath, devname);
+			/* non-virtual devices only */
+			strcpy(chkpath, statpath);
+			strcat(chkpath, "/device");
+			if (access(chkpath, F_OK) != 0) {
 				continue;
 			}
-			char statpath[43];
-			strcpy(statpath, "/sys/block/");
-			strcat(statpath, dp->d_name);
 			strcat(statpath, "/stat");
 			uintmax_t partwait;
 			if (pscanf(statpath,
