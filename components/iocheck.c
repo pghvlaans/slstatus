@@ -73,7 +73,7 @@
 			return NULL;
 		}
 		
-		return fmt_human((newin-oldin) * 1024, 1024);
+		return fmt_human((newin - oldin) * 1024, 1024);
 	}
 
 	const char *
@@ -125,6 +125,7 @@
 			    !strcmp(devname, "..")) {
 			    	continue;
 			}
+		
 			statlen = 16 + devlen;
 			chklen = 18 + devlen;
 			char statpath[statlen], chkpath[chklen];
@@ -136,6 +137,7 @@
 			if (access(chkpath, F_OK) != 0) {
 				continue;
 			}
+	
 			strcat(statpath, "/stat");
 			uintmax_t partwait;
 			if (pscanf(statpath,
