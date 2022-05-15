@@ -214,12 +214,11 @@
 
 	const char *
 	ram_used(void) {
-		int npages;
 		int active;
 		int wired;
 		size_t len;
 
-		len = sizeof(npages);
+		len = sizeof(active);
 		if (sysctlbyname("vm.stats.vm.v_active_count", &active, &len, NULL, 0) == -1
 				|| !len)
 			return NULL;
