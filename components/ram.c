@@ -193,7 +193,6 @@
 	ram_perc(void) {
 		int npages;
 		int active;
-		int wired;
 		size_t len;
 
 		len = sizeof(npages);
@@ -205,17 +204,12 @@
 				|| !len)
 			return NULL;
 
-		if (sysctlbyname("vm.stats.vm.v_wire_count", &wired, &len, NULL, 0) == -1
-				|| !len)
-			return NULL;
-
-		return bprintf("%d", (active + wired) * 100 / npages);
+		return bprintf("%d", active * 100 / npages);
 	}
 
 	const char *
 	ram_used(void) {
 		int active;
-		int wired;
 		size_t len;
 
 		len = sizeof(active);
@@ -223,10 +217,6 @@
 				|| !len)
 			return NULL;
 
-		if (sysctlbyname("vm.stats.vm.v_wire_count", &wired, &len, NULL, 0) == -1
-				|| !len)
-			return NULL;
-
-		return fmt_human((active + wired) * getpagesize(), 1024);
+		return fmt_human(active * getpagesize(), 1024);
 	}
 #endif
