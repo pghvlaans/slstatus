@@ -121,9 +121,9 @@
 
 		size = sizeof(freq);
 		/* in MHz */
-		if (sysctlbyname("hw.clockrate", &freq, &size, NULL, 0) == -1
+		if (sysctlbyname("dev.cpu.0.freq", &freq, &size, NULL, 0) == -1
 				|| !size) {
-			warn("sysctlbyname 'hw.clockrate':");
+			warn("sysctlbyname 'dev.cpu.0.freq':");
 			return NULL;
 		}
 
